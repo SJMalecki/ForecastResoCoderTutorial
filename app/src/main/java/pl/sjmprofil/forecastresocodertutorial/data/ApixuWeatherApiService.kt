@@ -4,6 +4,8 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import kotlinx.coroutines.Deferred
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import pl.sjmprofil.forecastresocodertutorial.data.network.ConnectivityInterceptor
+import pl.sjmprofil.forecastresocodertutorial.data.network.ConnectivityInterceptorImpl
 import pl.sjmprofil.forecastresocodertutorial.data.network.response.CurrentWeatherResponse
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -23,7 +25,7 @@ interface ApixuWeatherApiService {
     ): Deferred<CurrentWeatherResponse>
 
     companion object {
-        operator fun invoke(): ApixuWeatherApiService {
+        operator fun invoke(connectivityInterceptor: ConnectivityInterceptor): ApixuWeatherApiService {
             val requestInterceptor = Interceptor {
                 chain ->
                 val url = chain.request()
@@ -37,8 +39,10 @@ interface ApixuWeatherApiService {
                     .build()
                 return@Interceptor chain.proceed(request)
             }
+
             val okHttpClient = OkHttpClient.Builder()
                 .addInterceptor(requestInterceptor)
+                .addInterceptor(connectivityInterceptor)
                 .build()
 
             return Retrofit.Builder()

@@ -16,8 +16,10 @@ data class CurrentWeatherEntry(
     val tempF: Double,
     @SerializedName("is_day")
     val isDay: Int,
+
     @Embedded(prefix = "condition_")
     val condition: Condition,
+
     @SerializedName("wind_mph")
     val windMph: Double,
     @SerializedName("wind_kph")
@@ -42,6 +44,6 @@ data class CurrentWeatherEntry(
     @SerializedName("gust_kph")
     val gustKph: Double
 ){
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = false)
     var id: Int = CURRENT_WEATHER_ID
 }
